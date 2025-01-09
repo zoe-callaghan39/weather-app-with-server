@@ -68,7 +68,6 @@ const App = () => {
 
   return (
     <div className="app">
-      {/* Replace heading with image */}
       <img src={weatherImage} alt="Weather App Logo" className="app-logo" />
       <LocationInput addLocation={addLocation} />
       {error && <p className="error-message">{error}</p>}
