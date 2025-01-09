@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 // Hook to fetch weather data based on coordinates
 const useWeather = (latitude, longitude) => {
   const [temperature, setTemperature] = useState(null);
-  const [windSpeed, setWindSpeed] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -15,7 +14,6 @@ const useWeather = (latitude, longitude) => {
         if (!response.ok) throw new Error("Failed to fetch weather data");
         const data = await response.json();
         setTemperature(data.current_weather.temperature);
-        setWindSpeed(data.current_weather.windspeed);
       } catch (err) {
         setError(err.message);
       }
@@ -24,7 +22,7 @@ const useWeather = (latitude, longitude) => {
     fetchWeather();
   }, [latitude, longitude]);
 
-  return { temperature, windSpeed, error };
+  return { temperature, error };
 };
 
 export default useWeather;
