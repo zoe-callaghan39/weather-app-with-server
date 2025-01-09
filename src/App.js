@@ -3,6 +3,7 @@ import LocationInput from "./components/LocationInput";
 import WeatherCard from "./components/WeatherCard";
 import UnitToggle from "./components/UnitToggle";
 import "./styles/App.css";
+import weatherImage from "./assets/weather.png";
 
 const App = () => {
   const [locations, setLocations] = useState([
@@ -67,7 +68,8 @@ const App = () => {
 
   return (
     <div className="app">
-      <h1>Weather App</h1>
+      {/* Replace heading with image */}
+      <img src={weatherImage} alt="Weather App Logo" className="app-logo" />
       <LocationInput addLocation={addLocation} />
       {error && <p className="error-message">{error}</p>}
       <UnitToggle unit={unit} toggleUnit={toggleUnit} />
