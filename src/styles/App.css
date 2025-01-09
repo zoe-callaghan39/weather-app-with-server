@@ -1,0 +1,218 @@
+/* General styles */
+.app {
+  text-align: center;
+  font-family: 'Roboto', Arial, sans-serif;
+  padding: 20px;
+  background-color: #f9fafb;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Header */
+h1 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+/* Weather Cards */
+.weather-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.weather-cards > div {
+  margin: 0;
+}
+
+.weather-cards > div:empty {
+  display: none;
+}
+
+.weather-card {
+  background: linear-gradient(135deg, #2193b0, #6dd5ed);
+  color: white;
+  border-radius: 15px;
+  padding: 20px;
+  width: 240px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.weather-card:hover {
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.weather-card::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 150px;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  z-index: 0;
+  filter: blur(10px);
+}
+
+.weather-card h3.city-name {
+  font-size: 1.5rem;
+  margin: 0 0 10px;
+  font-weight: bold;
+  z-index: 1;
+  position: relative;
+}
+
+.weather-card p {
+  font-size: 1rem;
+  margin: 8px 0;
+  z-index: 1;
+  position: relative;
+}
+
+.weather-card .temperature {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.weather-card.error {
+  background: #ff6b6b;
+}
+
+.weather-card .delete-btn {
+  margin-top: 10px;
+  padding: 10px 15px;
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  z-index: 1;
+  position: relative;
+}
+
+.weather-card .delete-btn:hover {
+  background-color: #e63939;
+}
+
+/* Unit Toggle */
+.unit-toggle {
+  margin-top: 20px;
+}
+
+.unit-toggle button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  transition: transform 0.3s ease, background-color 0.4s ease;
+}
+
+.unit-toggle button:hover {
+  transform: scale(1.1);
+  background: linear-gradient(to right, #feb47b, #ff7e5f);
+}
+
+
+/* Location Input */
+.location-input {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: fit-content; 
+  margin: 0 auto;
+}
+
+.location-input input {
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  width: 260px;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.location-input input:focus {
+  border-color: #36d7b7;
+  box-shadow: 0 0 10px rgba(54, 215, 183, 0.4);
+  outline: none;
+}
+
+.location-input button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background: linear-gradient(to right, #36d7b7, #2bb599);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.location-input button:hover {
+  transform: scale(1.1);
+}
+
+/* Suggestions */
+.suggestions {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ddd;
+  max-height: 150px;
+  overflow-y: auto;
+  background: white;
+  position: absolute;
+  width: calc(100% - 20px); 
+  z-index: 1000;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  top: 100%; 
+  left: 10px; 
+  display: none;
+}
+
+.location-input input:focus + .suggestions,
+.suggestions:not(:empty) {
+  display: block;
+}
+
+.suggestions li {
+  padding: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, font-weight 0.3s ease;
+}
+
+.suggestions li:hover {
+  background: #36d7b7;
+  color: white;
+  font-weight: bold;
+}
+
+
+
+/* Error Message */
+.error-message {
+  color: #e63946; 
+  font-size: 14px; 
+  font-weight: 600; 
+  margin-top: 5px; 
+}
+
