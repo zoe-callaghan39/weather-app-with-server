@@ -21,3 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Ignore Prisma migration lock file
+prisma/migration_lock.toml

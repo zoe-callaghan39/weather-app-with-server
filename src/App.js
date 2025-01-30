@@ -1,70 +1,87 @@
-import React, { useState, useEffect } from "react";
-import LocationInput from "./components/LocationInput";
-import WeatherCard from "./components/WeatherCard";
-import UnitToggle from "./components/UnitToggle";
-import "./styles/App.css";
-import weatherImage from "./assets/weather.png";
+import React, { useState, useEffect } from 'react';
+import LocationInput from './components/LocationInput';
+import WeatherCard from './components/WeatherCard';
+import UnitToggle from './components/UnitToggle';
+import './styles/App.css';
+import weatherImage from './assets/weather.png';
+import { getCoordinates } from './utils/geocode';
 
 const App = () => {
-  const [locations, setLocations] = useState([
-    { name: "Berlin", lat: 52.52, lon: 13.41, country: "Germany" },
-    { name: "London", lat: 51.51, lon: -0.13, country: "United Kingdom" },
-    { name: "New York", lat: 40.71, lon: -74.01, country: "United States" },
-    { name: "Leeds", lat: 53.8, lon: -1.55, country: "United Kingdom" },
-  ]);
-  const [unit, setUnit] = useState(localStorage.getItem("unit") || "C");
-  const [error, setError] = useState("");
+  const [locations, setLocations] = useState([]);
+  const [unit, setUnit] = useState(localStorage.getItem('unit') || 'C');
+  const [error, setError] = useState('');
 
-  const toggleUnit = () => {
-    const newUnit = unit === "C" ? "F" : "C";
-    setUnit(newUnit);
-    localStorage.setItem("unit", newUnit);
-  };
-
-  const addLocation = async (cityName) => {
-    try {
-      setError("");
-
-      const geocode = await import("./utils/geocode");
-      const newLocation = await geocode.getCoordinates(cityName);
-
-      if (!newLocation) {
-        setError("City not found. Please try a different name.");
-        return;
-      }
-
-      const isDuplicate = locations.some(
-        (loc) =>
-          loc.name.toLowerCase() === newLocation.name.toLowerCase() &&
-          Math.abs(loc.lat - newLocation.lat) < 0.01 &&
-          Math.abs(loc.lon - newLocation.lon) < 0.01
-      );
-
-      if (isDuplicate) {
-        setError(`${newLocation.name} is already in your list.`);
-        return;
-      }
-
-      setLocations((prev) => [...prev, newLocation]);
-    } catch (error) {
-      console.error("Error adding location:", error);
-      setError("An error occurred. Please check your network connection.");
-    }
-  };
-
-  const deleteLocation = (index) => {
-    const updatedLocations = locations.filter((_, i) => i !== index);
-    setLocations(updatedLocations);
-  };
-
+  // Fetch locations from the database when the app loads
   useEffect(() => {
-    const savedLocations = JSON.parse(localStorage.getItem("locations")) || [];
-    setLocations(savedLocations.length > 0 ? savedLocations : locations);
+    fetch('http://localhost:5000/locations')
+      .then((res) => res.json())
+      .then(setLocations)
+      .catch((err) => console.error('Error fetching locations:', err));
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("locations", JSON.stringify(locations));
-  }, [locations]);
+  // Toggle temperature unit (Celsius/Fahrenheit)
+  const toggleUnit = () => {
+    const newUnit = unit === 'C' ? 'F' : 'C';
+    setUnit(newUnit);
+    localStorage.setItem('unit', newUnit);
+  };
+
+  // Add a new location and save it to the database
+  const addLocation = (cityName) => {
+    setError('');
+
+    getCoordinates(cityName)
+      .then((newLocation) => {
+        if (!newLocation) {
+          throw new Error('City not found. Please try a different name.');
+        }
+
+        // Check for duplicates before saving
+        const isDuplicate = locations.some(
+          (loc) =>
+            loc.name.toLowerCase() === newLocation.name.toLowerCase() &&
+            Math.abs(loc.lat - newLocation.lat) < 0.01 &&
+            Math.abs(loc.lon - newLocation.lon) < 0.01
+        );
+
+        if (isDuplicate) {
+          throw new Error(`${newLocation.name} is already in your list.`);
+        }
+
+        // Save the new location to the backend
+        fetch('http://localhost:5000/locations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newLocation),
+        })
+          .then((res) => res.json())
+          .then((savedLocation) => {
+            setLocations((prev) => [...prev, savedLocation]);
+          })
+          .catch((err) => {
+            console.error('Error saving location:', err);
+            setError('Failed to save location.');
+          });
+      })
+      .catch((err) => {
+        console.error('Error adding location:', err);
+        setError(err.message || 'An error occurred.');
+      });
+  };
+
+  // Delete a location from the database
+  const deleteLocation = (id) => {
+    fetch(`http://localhost:5000/locations/${id}`, {
+      method: 'DELETE',
+    })
+      .then(() => {
+        setLocations((prev) => prev.filter((loc) => loc.id !== id));
+      })
+      .catch((err) => {
+        console.error('Error deleting location:', err);
+        setError('Failed to delete location.');
+      });
+  };
 
   return (
     <div className="app">
@@ -73,15 +90,15 @@ const App = () => {
       {error && <p className="error-message">{error}</p>}
       <UnitToggle unit={unit} toggleUnit={toggleUnit} />
       <div className="weather-cards">
-        {locations.map((location, index) => (
+        {locations.map((location) => (
           <WeatherCard
-            key={`${location.lat},${location.lon}`}
+            key={location.id}
             name={location.name}
             lat={location.lat}
             lon={location.lon}
             country={location.country}
             unit={unit}
-            onDelete={() => deleteLocation(index)}
+            onDelete={() => deleteLocation(location.id)}
           />
         ))}
       </div>

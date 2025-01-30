@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 // Hook to fetch weather data based on coordinates
 const useWeather = (latitude, longitude) => {
@@ -6,20 +6,28 @@ const useWeather = (latitude, longitude) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchWeather = async () => {
-      try {
-        const response = await fetch(
-          `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
-        );
-        if (!response.ok) throw new Error("Failed to fetch weather data");
-        const data = await response.json();
-        setTemperature(data.current_weather.temperature);
-      } catch (err) {
+    fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
+    )
+      .then((response) => {
+        if (!response.ok) throw new Error('Failed to fetch weather data');
+        return response.json();
+      })
+      .then((data) => {
+        if (
+          data &&
+          data.current_weather &&
+          data.current_weather.temperature !== undefined
+        ) {
+          setTemperature(data.current_weather.temperature);
+        } else {
+          throw new Error('Invalid weather data received');
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching weather data:', err);
         setError(err.message);
-      }
-    };
-
-    fetchWeather();
+      });
   }, [latitude, longitude]);
 
   return { temperature, error };

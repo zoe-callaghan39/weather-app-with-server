@@ -1,0 +1,9 @@
+-- CreateTable
+CREATE TABLE "Location" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "lat" REAL NOT NULL,
+    "lon" REAL NOT NULL,
+    "country" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

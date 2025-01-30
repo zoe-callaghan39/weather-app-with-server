@@ -1,34 +1,40 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 const LocationInput = ({ addLocation }) => {
-  const [cityName, setCityName] = useState("");
+  const [cityName, setCityName] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
-  const fetchSuggestions = async (query) => {
+  const fetchSuggestions = (query) => {
     if (!query) {
       setSuggestions([]);
       return;
     }
 
-    try {
-      const response = await fetch(
-        `https://api.opencagedata.com/geocode/v1/json?q=${query}&key=6fe20c614e5849e1ad489081dc9e3709`
-      );
-      if (!response.ok) throw new Error("Failed to fetch suggestions");
-      const data = await response.json();
-      const suggestionList = data.results.map((result) => result.formatted);
-      setSuggestions(suggestionList);
-    } catch (error) {}
+    fetch(
+      `https://api.opencagedata.com/geocode/v1/json?q=${query}&key=6fe20c614e5849e1ad489081dc9e3709`
+    )
+      .then((response) => {
+        if (!response.ok) throw new Error('Failed to fetch suggestions');
+        return response.json();
+      })
+      .then((data) => {
+        const suggestionList = data.results.map((result) => result.formatted);
+        setSuggestions(suggestionList);
+      })
+      .catch(() => {
+        setSuggestions([]);
+      });
   };
 
   const handleChange = (e) => {
-    setCityName(e.target.value);
-    fetchSuggestions(e.target.value);
+    const query = e.target.value;
+    setCityName(query);
+    fetchSuggestions(query);
   };
 
   const handleSuggestionClick = (suggestion) => {
     addLocation(suggestion);
-    setCityName("");
+    setCityName('');
     setSuggestions([]);
   };
 
@@ -36,7 +42,7 @@ const LocationInput = ({ addLocation }) => {
     e.preventDefault();
     if (cityName.trim()) {
       addLocation(cityName);
-      setCityName("");
+      setCityName('');
       setSuggestions([]);
     }
   };

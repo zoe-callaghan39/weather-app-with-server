@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
 const UnitToggle = ({ unit, toggleUnit }) => (
   <div className="unit-toggle">
-    <button onClick={toggleUnit}>Show in °{unit === "C" ? "F" : "C"}</button>
+    <button onClick={toggleUnit}>Show in °{unit === 'C' ? 'F' : 'C'}</button>
   </div>
 );
 

@@ -1,13 +1,13 @@
-import React from "react";
-import useWeather from "../hooks/useWeather";
-import useTime from "../hooks/useTime";
+import React from 'react';
+import useWeather from '../hooks/useWeather';
+import useTime from '../hooks/useTime';
 
 const WeatherCard = ({ name, lat, lon, country, unit, onDelete }) => {
   const { temperature, error: weatherError } = useWeather(lat, lon);
   const { localTime, error: timeError } = useTime(lat, lon);
 
   const convertTemperature = (temp) =>
-    unit === "F" ? (temp * 9) / 5 + 32 : temp;
+    unit === 'F' ? (temp * 9) / 5 + 32 : temp;
 
   if (weatherError) {
     return (
@@ -15,8 +15,8 @@ const WeatherCard = ({ name, lat, lon, country, unit, onDelete }) => {
         <h3>{name}</h3>
         <p>{country}</p>
         <p>
-          {weatherError === "Failed to fetch weather data"
-            ? "Unable to load weather data."
+          {weatherError === 'Failed to fetch weather data'
+            ? 'Unable to load weather data.'
             : weatherError}
         </p>
         <button onClick={onDelete} className="delete-btn">
