@@ -13,11 +13,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        Int        @id @default(autoincrement())
+  name      String
+  email     String     @unique
+  password  String
+  // One-to-many relationship to Location
+  locations Location[]
+}
+
 model Location {
   id       Int     @id @default(autoincrement())
   name     String
   lat      Float
   lon      Float
   country  String
+  // Foreign key to User
+  userId   Int
+  user     User     @relation(fields: [userId], references: [id])
 }
 

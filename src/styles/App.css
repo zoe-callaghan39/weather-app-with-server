@@ -7,15 +7,15 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 
 .app-logo {
-  width: 300px; 
+  width: 300px;
   height: auto;
-  margin-bottom: 20px;
- }
+  margin: 20px auto; 
+  display: inline-block; 
+}
 
 /* Header */
 h1 {
@@ -212,8 +212,6 @@ h1 {
   font-weight: bold;
 }
 
-
-
 /* Error Message */
 .error-message {
   color: #e63946; 
@@ -221,6 +219,128 @@ h1 {
   font-weight: 600; 
   margin-top: 5px; 
 }
+
+/* MODAL OVERLAY & BOX */
+
+/* Semi-transparent dark background covering the entire screen */
+.auth-overlay {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* The white box containing the Login/Signup forms */
+.auth-modal {
+  background: #fff;
+  width: 350px;
+  max-width: 90%;
+  border-radius: 8px;
+  padding: 20px 30px;
+  position: relative; 
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.close-modal-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  font-weight: bold;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  cursor: pointer;
+}
+
+/* AUTH FORM STYLES */
+.auth-modal h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.auth-modal form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-modal label {
+  text-align: left;
+  font-weight: 600;
+  margin: 0.5rem 0 0.2rem;
+}
+
+.auth-modal input {
+  padding: 0.6rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.auth-modal button[type="submit"] {
+  margin-top: 1rem;
+  padding: 0.6rem;
+  border: none;
+  background: #36d7b7;
+  color: #fff;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.auth-modal button[type="submit"]:hover {
+  background: #2bb599;
+}
+
+.auth-modal .error-message {
+  color: #e63946;
+  margin-top: 0.5rem;
+  text-align: left;
+}
+
+/* HEADER AUTH BUTTONS */
+.app-header {
+  width: 100%;
+  position: relative;   
+  text-align: center;   
+  margin-bottom: 1rem;
+}
+
+.auth-buttons {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.auth-btn, .logout-btn {
+  cursor: pointer;
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 20px;
+  background: linear-gradient(to right, #36d7b7, #2bb599);
+  color: #fff;
+  outline: none;
+  transition: transform 0.3s ease;
+}
+
+.auth-btn:hover, .logout-btn:hover {
+  transform: scale(1.05);
+}
+
+.sign-up-btn {
+  background: linear-gradient(to right, #feb47b, #ff7e5f);
+}
+
 
 
 

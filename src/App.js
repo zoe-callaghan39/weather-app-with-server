@@ -1,67 +1,102 @@
 import React, { useState, useEffect } from 'react';
+import './styles/App.css';
+
 import LocationInput from './components/LocationInput';
 import WeatherCard from './components/WeatherCard';
 import UnitToggle from './components/UnitToggle';
-import './styles/App.css';
+import Signup from './components/Signup';
+import Login from './components/Login';
+
 import weatherImage from './assets/weather.png';
 import { getCoordinates } from './utils/geocode';
 
-const App = () => {
-  const [locations, setLocations] = useState([]);
+const DEFAULT_CITIES = [
+  { name: 'Berlin', lat: 52.52, lon: 13.41, country: 'Germany' },
+  { name: 'London', lat: 51.51, lon: -0.13, country: 'United Kingdom' },
+  { name: 'New York', lat: 40.71, lon: -74.01, country: 'United States' },
+  { name: 'Leeds', lat: 53.8, lon: -1.55, country: 'United Kingdom' },
+];
+
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
+  const [authForm, setAuthForm] = useState('none');
+
   const [unit, setUnit] = useState(localStorage.getItem('unit') || 'C');
   const [error, setError] = useState('');
 
-  // Fetch locations from the database when the app loads
-  useEffect(() => {
-    fetch('http://localhost:5000/locations')
-      .then((res) => res.json())
-      .then(setLocations)
-      .catch((err) => console.error('Error fetching locations:', err));
-  }, []);
+  const [localLocations, setLocalLocations] = useState(() => {
+    const stored = localStorage.getItem('localLocations');
+    return stored ? JSON.parse(stored) : DEFAULT_CITIES;
+  });
 
-  // Toggle temperature unit (Celsius/Fahrenheit)
+  const [dbLocations, setDbLocations] = useState([]);
+
+  useEffect(() => {
+    localStorage.setItem('localLocations', JSON.stringify(localLocations));
+  }, [localLocations]);
+
+  // Fetch DB if logged in
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setDbLocations([]);
+      return;
+    }
+    fetch('http://localhost:5000/locations', {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setDbLocations(data))
+      .catch((err) => console.error('Error fetching locations:', err));
+  }, [isLoggedIn]);
+
+  const activeLocations = isLoggedIn ? dbLocations : localLocations;
+
+  // Toggle unit
   const toggleUnit = () => {
     const newUnit = unit === 'C' ? 'F' : 'C';
     setUnit(newUnit);
     localStorage.setItem('unit', newUnit);
   };
 
-  // Add a new location and save it to the database
+  // Add location
   const addLocation = (cityName) => {
     setError('');
-
     getCoordinates(cityName)
       .then((newLocation) => {
-        if (!newLocation) {
-          throw new Error('City not found. Please try a different name.');
-        }
+        if (!newLocation) throw new Error('City not found. Please try again.');
 
-        // Check for duplicates before saving
-        const isDuplicate = locations.some(
+        const isDuplicate = activeLocations.some(
           (loc) =>
             loc.name.toLowerCase() === newLocation.name.toLowerCase() &&
             Math.abs(loc.lat - newLocation.lat) < 0.01 &&
             Math.abs(loc.lon - newLocation.lon) < 0.01
         );
-
-        if (isDuplicate) {
+        if (isDuplicate)
           throw new Error(`${newLocation.name} is already in your list.`);
-        }
 
-        // Save the new location to the backend
-        fetch('http://localhost:5000/locations', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newLocation),
-        })
-          .then((res) => res.json())
-          .then((savedLocation) => {
-            setLocations((prev) => [...prev, savedLocation]);
+        if (isLoggedIn) {
+          fetch('http://localhost:5000/locations', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify(newLocation),
           })
-          .catch((err) => {
-            console.error('Error saving location:', err);
-            setError('Failed to save location.');
-          });
+            .then((res) => res.json())
+            .then((savedLocation) =>
+              setDbLocations((prev) => [...prev, savedLocation])
+            )
+            .catch((err) => {
+              console.error('Error saving location:', err);
+              setError('Failed to save location.');
+            });
+        } else {
+          setLocalLocations((prev) => [...prev, newLocation]);
+        }
       })
       .catch((err) => {
         console.error('Error adding location:', err);
@@ -69,41 +104,117 @@ const App = () => {
       });
   };
 
-  // Delete a location from the database
-  const deleteLocation = (id) => {
-    fetch(`http://localhost:5000/locations/${id}`, {
-      method: 'DELETE',
-    })
-      .then(() => {
-        setLocations((prev) => prev.filter((loc) => loc.id !== id));
+  // Delete location
+  const deleteLocation = (locIdOrIndex) => {
+    if (isLoggedIn) {
+      fetch(`http://localhost:5000/locations/${locIdOrIndex}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       })
-      .catch((err) => {
-        console.error('Error deleting location:', err);
-        setError('Failed to delete location.');
-      });
+        .then(() =>
+          setDbLocations((prev) =>
+            prev.filter((loc) => loc.id !== locIdOrIndex)
+          )
+        )
+        .catch((err) => {
+          console.error('Error deleting location:', err);
+          setError('Failed to delete location.');
+        });
+    } else {
+      setLocalLocations((prev) =>
+        prev.filter((_, index) => index !== locIdOrIndex)
+      );
+    }
+  };
+
+  // Auth actions
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+    setAuthForm('none');
+  };
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
+    setDbLocations([]);
+    setAuthForm('none');
+    setError('');
+  };
+  const handleSignupSuccess = () => {
+    setAuthForm('login');
+  };
+  const closeModal = () => {
+    setAuthForm('none');
   };
 
   return (
     <div className="app">
-      <img src={weatherImage} alt="Weather App Logo" className="app-logo" />
+      <header className="app-header">
+        <img src={weatherImage} alt="Weather App Logo" className="app-logo" />
+
+        <div className="auth-buttons">
+          {isLoggedIn ? (
+            <button onClick={handleLogout} className="logout-btn">
+              Logout
+            </button>
+          ) : (
+            <>
+              <button onClick={() => setAuthForm('login')} className="auth-btn">
+                Login
+              </button>
+              <button
+                onClick={() => setAuthForm('signup')}
+                className="auth-btn sign-up-btn"
+              >
+                Sign Up
+              </button>
+            </>
+          )}
+        </div>
+      </header>
+
+      {/* AUTH MODAL */}
+      {authForm !== 'none' && !isLoggedIn && (
+        <div className="auth-overlay">
+          <div className="auth-modal">
+            <button className="close-modal-btn" onClick={closeModal}>
+              &times;
+            </button>
+
+            {authForm === 'login' && (
+              <Login onLoginSuccess={handleLoginSuccess} />
+            )}
+            {authForm === 'signup' && (
+              <Signup onSignupSuccess={handleSignupSuccess} />
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* MAIN WEATHER UI */}
       <LocationInput addLocation={addLocation} />
       {error && <p className="error-message">{error}</p>}
       <UnitToggle unit={unit} toggleUnit={toggleUnit} />
+
       <div className="weather-cards">
-        {locations.map((location) => (
+        {activeLocations.map((location, index) => (
           <WeatherCard
-            key={location.id}
+            key={isLoggedIn ? location.id : index}
             name={location.name}
             lat={location.lat}
             lon={location.lon}
             country={location.country}
             unit={unit}
-            onDelete={() => deleteLocation(location.id)}
+            onDelete={() => {
+              const locIdOrIndex = isLoggedIn ? location.id : index;
+              deleteLocation(locIdOrIndex);
+            }}
           />
         ))}
       </div>
     </div>
   );
-};
+}
 
 export default App;
