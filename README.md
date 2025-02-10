@@ -2,6 +2,45 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## How to Run This Project
+
+### 1. Install Dependencies
+
+From the project’s root folder (`weather-app`), run:
+
+### `npm install`
+This installs the necessary dependencies for both the frontend (React) and backend (Express/Prisma).
+
+
+### 2. Start the Backend
+
+Open a terminal in the project’s root folder (weather-app) and run:
+
+### `node server.js`
+
+The server will start at http://localhost:5000.
+
+You should see: `Server running on port 5000`
+
+### 3. Start the Frontend (React)
+
+In a new terminal, from the same directory, run:
+
+### `npm start`
+
+This starts the Create React App development server at http://localhost:3000.
+
+Open http://localhost:3000 to view the app in your browser.
+
+### 4. Viewing/Editing Your Database (Prisma)
+
+You can use Prisma Studio to inspect your database:
+
+### `npx prisma studio`
+
+This will open a local interface (often http://localhost:5555) where you can see and edit your tables.
+
+
 ## Available Scripts
 
 In the project directory, you can run:
