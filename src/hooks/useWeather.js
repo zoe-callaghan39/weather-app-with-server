@@ -24,10 +24,8 @@ const useWeather = (latitude, longitude) => {
           let condition = getWeatherCondition(data.current_weather.weathercode);
 
           if (data.current_weather.windspeed >= 20) {
-            condition = 'windy';
+            condition = 'wind';
           }
-
-          // TO HARDCODE WIND: setWeatherCondition('windy'); & COMMENT OUT LINE 24-28
           setWeatherCondition(condition);
 
           const utcOffsetSeconds = data.utc_offset_seconds || 0;

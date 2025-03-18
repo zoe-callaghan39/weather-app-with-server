@@ -37,7 +37,7 @@ const WeatherAnimation = ({ weatherType, isNight }) => {
           sunwithcloud: createSunCloudAnimation,
           rain: createRainAnimation,
           snow: createSnowAnimation,
-          windy: createWindAnimation,
+          wind: createWindAnimation,
           thunder: createThunderAnimation,
           fog: createFogAnimation,
         };
