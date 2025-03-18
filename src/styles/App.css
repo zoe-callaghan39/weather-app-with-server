@@ -1,4 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
 /* General styles */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
 .app {
   text-align: center;
   font-family: 'Roboto', Arial, sans-serif;
@@ -13,8 +19,8 @@
 .app-logo {
   width: 300px;
   height: auto;
-  margin: 20px auto; 
-  display: inline-block; 
+  margin: 20px auto;
+  display: inline-block;
 }
 
 /* Header */
@@ -42,76 +48,85 @@ h1 {
   display: none;
 }
 
+/* Weather Cards */
+.weather-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
 .weather-card {
-  background: linear-gradient(135deg, #2193b0, #6dd5ed);
+  background: linear-gradient(135deg, #3A1AA8, #50A8EE);
   color: white;
   border-radius: 15px;
   padding: 20px;
-  width: 240px;
+  width: 260px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.4s ease, box-shadow 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 320px;
+  text-align: center;
   position: relative;
-  overflow: hidden;
 }
 
-.weather-card:hover {
-  transform: translateY(-8px) scale(1.05);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-}
-
-.weather-card::before {
-  content: "";
-  position: absolute;
-  top: -50px;
-  right: -50px;
-  width: 150px;
-  height: 150px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  z-index: 0;
-  filter: blur(10px);
+.weather-card.night-mode {
+  background: linear-gradient(135deg, #0a0a33, #1c1c5c);
 }
 
 .weather-card h3.city-name {
-  font-size: 1.5rem;
-  margin: 0 0 10px;
-  font-weight: bold;
-  z-index: 1;
-  position: relative;
+  font-size: 30px;
+  margin-bottom: 4px;
+  font-weight: 700;
 }
 
-.weather-card p {
-  font-size: 1rem;
-  margin: 8px 0;
-  z-index: 1;
-  position: relative;
+.weather-card p.country-name {
+  font-size: 20px;
+  margin: 2px 0;
+  font-weight: 400;
 }
 
-.weather-card .temperature {
-  font-size: 1.25rem;
+.weather-card p.local-time {
+  font-size: 40px;
+  margin-top: 10px;
+  margin-bottom: 0px;
   font-weight: 600;
 }
 
-.weather-card.error {
-  background: #ff6b6b;
-}
-
-.weather-card .delete-btn {
+.weather-card .temperature {
+  font-size: 30px;
+  font-weight: 700;
   margin-top: 10px;
-  padding: 10px 15px;
-  background-color: #ff6b6b;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
-  z-index: 1;
-  position: relative;
+  margin-bottom: 0px;
 }
 
-.weather-card .delete-btn:hover {
-  background-color: #e63939;
+.weather-card .weather-condition {
+  background-color: #FFD950;
+  color: #1B3FB8;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-top: 10px;
+  text-transform: uppercase;
+}
+
+.weather-card .remove-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.weather-card .remove-icon:hover {
+  opacity: 0.7;
 }
 
 /* Unit Toggle */
@@ -120,20 +135,22 @@ h1 {
 }
 
 .unit-toggle button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background: linear-gradient(to right, #ff7e5f, #feb47b);
-  color: white;
+  padding: 12px 24px;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: #FFD950;
+  color: #1B3FB8;
   border: none;
-  border-radius: 20px;
-  transition: transform 0.3s ease, background-color 0.4s ease;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-transform: uppercase;
+  font-size: 16px;
 }
 
 .unit-toggle button:hover {
   transform: scale(1.1);
-  background: linear-gradient(to right, #feb47b, #ff7e5f);
 }
-
 
 /* Location Input */
 .location-input {
@@ -141,35 +158,38 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  width: fit-content; 
+  gap: 12px;
+  width: fit-content;
   margin: 0 auto;
 }
 
 .location-input input {
-  padding: 12px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  width: 260px;
-  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  padding: 14px;
+  font-size: 18px;
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  width: 280px;
+  text-transform: uppercase;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .location-input input:focus {
-  border-color: #36d7b7;
-  box-shadow: 0 0 10px rgba(54, 215, 183, 0.4);
+  border-color: #50A8EE;
   outline: none;
 }
 
 .location-input button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background: linear-gradient(to right, #36d7b7, #2bb599);
-  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: #FFD950;
+  color: #1B3FB8;
   border: none;
-  border-radius: 20px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  margin-left: 10px;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-transform: uppercase;
 }
 
 .location-input button:hover {
@@ -186,12 +206,12 @@ h1 {
   overflow-y: auto;
   background: white;
   position: absolute;
-  width: calc(100% - 20px); 
+  width: calc(100% - 20px);
   z-index: 1000;
-  border-radius: 5px;
+  border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  top: 100%; 
-  left: 10px; 
+  top: 100%;
+  left: 10px;
   display: none;
 }
 
@@ -207,50 +227,46 @@ h1 {
 }
 
 .suggestions li:hover {
-  background: #36d7b7;
+  background-color: #FFD950;
   color: white;
   font-weight: bold;
 }
 
 /* Error Message */
 .error-message {
-  color: #e63946; 
-  font-size: 14px; 
-  font-weight: 600; 
-  margin-top: 5px; 
+  color: #e63946;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 5px;
 }
 
 /* MODAL OVERLAY & BOX */
-
-/* Semi-transparent dark background covering the entire screen */
 .auth-overlay {
-  position: fixed; 
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5); 
+  background: rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
 }
 
-/* The white box containing the Login/Signup forms */
 .auth-modal {
   background: #fff;
-  width: 350px;
+  width: 400px;
   max-width: 90%;
-  border-radius: 8px;
-  padding: 20px 30px;
-  position: relative; 
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
 }
 
 .close-modal-btn {
   background: transparent;
   border: none;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: bold;
   position: absolute;
   top: 12px;
@@ -261,8 +277,8 @@ h1 {
 /* AUTH FORM STYLES */
 .auth-modal h2 {
   margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 1.5rem;
+  margin-bottom: 15px;
+  font-size: 1.8rem;
 }
 
 .auth-modal form {
@@ -277,26 +293,36 @@ h1 {
 }
 
 .auth-modal input {
-  padding: 0.6rem;
-  font-size: 1rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+  padding: 12px;
+  font-size: 18px;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-modal input:focus {
+  border-color: #50A8EE;
+  box-shadow: 0 0 10px rgba(80, 168, 238, 0.5);
 }
 
 .auth-modal button[type="submit"] {
   margin-top: 1rem;
-  padding: 0.6rem;
+  padding: 12px 24px;
   border: none;
-  background: #36d7b7;
-  color: #fff;
-  font-size: 1rem;
-  border-radius: 4px;
+  background-color: #FFD950;
+  color: #1B3FB8;
+  font-weight: 600;
+  font-size: 18px;
+  text-transform: uppercase;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .auth-modal button[type="submit"]:hover {
-  background: #2bb599;
+  transform: scale(1.1);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
 }
 
 .auth-modal .error-message {
@@ -308,8 +334,8 @@ h1 {
 /* HEADER AUTH BUTTONS */
 .app-header {
   width: 100%;
-  position: relative;   
-  text-align: center;   
+  position: relative;
+  text-align: center;
   margin-bottom: 1rem;
 }
 
@@ -324,13 +350,15 @@ h1 {
 .auth-btn, .logout-btn {
   cursor: pointer;
   padding: 8px 15px;
-  font-size: 0.9rem;
+  font-size: 15px;
+  font-weight: 600;
   border: none;
-  border-radius: 20px;
-  background: linear-gradient(to right, #36d7b7, #2bb599);
-  color: #fff;
+  border-radius: 12px;
+  background-color: #FFD950;
+  color: #1B3FB8;
+  text-transform: uppercase;
   outline: none;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .auth-btn:hover, .logout-btn:hover {
@@ -338,9 +366,30 @@ h1 {
 }
 
 .sign-up-btn {
-  background: linear-gradient(to right, #feb47b, #ff7e5f);
+  background-color: #FFD950;
 }
 
+.weather-card.night-mode {
+  background: linear-gradient(135deg, #0a0a33, #1c1c5c);
+  color: #fff;
+}
 
+/* Sun glare effect */
+.weather-card.sunny {
+  position: relative;
+  overflow: hidden; 
+}
 
-
+.weather-card.sunny::after {
+  content: "";
+  position: absolute;
+  top: -100px;
+  left: 0;
+  width: 150%;
+  height: 150%;
+  background: url('../assets/sunglare2.png') center center no-repeat;
+  background-size: contain; 
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 0;
+}
