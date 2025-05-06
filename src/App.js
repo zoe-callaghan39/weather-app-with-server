@@ -7,7 +7,7 @@ import UnitToggle from './components/UnitToggle';
 import Signup from './components/Signup';
 import Login from './components/Login';
 
-import weatherImage from './assets/weather.png';
+import weatherImage from './assets/Weatherly1.png';
 import { getCoordinates } from './utils/geocode';
 
 const DEFAULT_CITIES = [

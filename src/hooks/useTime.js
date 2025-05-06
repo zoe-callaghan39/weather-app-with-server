@@ -1,4 +1,3 @@
-// src/hooks/useTime.js
 import { useState, useEffect } from 'react';
 
 // Hook to fetch local time data based on coordinates
@@ -24,21 +23,17 @@ const useTime = (latitude, longitude) => {
           throw new Error('Invalid time data received');
         }
 
-        // define newTime here
         const newTime = new Date(data.dateTime);
         setLocalTime(newTime);
         setError(null);
 
-        // clear any existing timers
         clearTimeout(initialTimeout);
         clearInterval(tickInterval);
 
-        // compute ms until the next real clock minute
         const now = newTime;
         const msUntilNextMinute =
           (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
 
-        // schedule the first tick exactly on the next :00
         initialTimeout = setTimeout(() => {
           setLocalTime((prev) => new Date(prev.getTime() + 60000));
           tickInterval = setInterval(() => {
@@ -51,7 +46,6 @@ const useTime = (latitude, longitude) => {
       }
     };
 
-    // initial fetch + 10‑minute re‑sync
     fetchTime();
     fetcher = setInterval(fetchTime, 10 * 60 * 1000);
 

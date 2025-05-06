@@ -11,27 +11,32 @@ import createSunCloudAnimation from '../animations/createSunCloudAnimation';
 import createMoonAndStarsAnimation from '../animations/createMoonAndStarsAnimation';
 
 const WeatherAnimation = ({ weatherType, isNight }) => {
-  const pixiContainer = useRef(null);
+  const containerRef = useRef(null);
   const appRef = useRef(null);
 
   useEffect(() => {
-    if (!pixiContainer.current) return;
+    if (!containerRef.current) return;
 
     if (appRef.current) {
       appRef.current.destroy(true);
       appRef.current = null;
     }
 
-    const app = new Application();
-    app.init({ width: 200, height: 150, backgroundAlpha: 0 }).then(() => {
-      if (!pixiContainer.current) return;
-      pixiContainer.current.appendChild(app.canvas);
+    const setup = async () => {
+      const app = new Application();
+      await app.init({
+        width: 200,
+        height: 150,
+        backgroundAlpha: 0,
+      });
+
+      containerRef.current.appendChild(app.canvas);
       appRef.current = app;
 
       if (isNight) {
         createMoonAndStarsAnimation(app);
       } else {
-        const animationFunctions = {
+        const map = {
           sun: createSunAnimation,
           cloudy: createCloudAnimation,
           sunwithcloud: createSunCloudAnimation,
@@ -41,10 +46,11 @@ const WeatherAnimation = ({ weatherType, isNight }) => {
           thunder: createThunderAnimation,
           fog: createFogAnimation,
         };
-
-        animationFunctions[weatherType]?.(app);
+        map[weatherType]?.(app);
       }
-    });
+    };
+
+    setup();
 
     return () => {
       if (appRef.current) {
@@ -54,7 +60,7 @@ const WeatherAnimation = ({ weatherType, isNight }) => {
     };
   }, [weatherType, isNight]);
 
-  return <div ref={pixiContainer} className={isNight ? 'night-mode' : ''} />;
+  return <div ref={containerRef} className={isNight ? 'night-mode' : ''} />;
 };
 
 export default WeatherAnimation;
